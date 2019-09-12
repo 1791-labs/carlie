@@ -1,0 +1,89 @@
+plugins({
+  // Java plugin [ https://docs.gradle.org/5.6.2/userguide/java_plugin.html ].
+  id('java')
+
+  // Kotlin JVM plugin [ https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm ].
+  id('org.jetbrains.kotlin.jvm')
+    .version('1.3.50')
+
+  // Eclipse plugin [ https://docs.gradle.org/5.6.2/userguide/eclipse_plugin.html ].
+  id('eclipse')
+
+  // IntelliJ plugin [ https://plugins.gradle.org/plugin/org.jetbrains.intellij ].
+  id('org.jetbrains.intellij')
+    .version('0.4.10')
+
+  // Checker Framework plugin [ https://plugins.gradle.org/plugin/org.checkerframework ].
+  id('org.checkerframework')
+    .version('0.3.30')
+})
+
+repositories({
+  // By default, resolve dependencies using Bintray’s JCenter repository [ https://jcenter.bintray.com ].
+  jcenter()
+})
+
+dependencies({
+  // The Kotlin Standard Library [ https://github.com/JetBrains/kotlin/tree/v1.3.50/libraries/stdlib/jdk8 ].
+  implementation([
+    group: 'org.jetbrains.kotlin',
+    name: 'kotlin-stdlib-jdk8',
+    version: '1.3.50'
+  ])
+
+  // Google’s Guava v28.1-jre [ https://github.com/google/guava/tree/v28.1 ].
+  implementation([
+    group: 'com.google.guava',
+    name: 'guava',
+    version: '28.1-jre'
+  ])
+
+  // The Checker Framework v2.11.0 [ https://github.com/typetools/checker-framework/tree/checker-framework-2.11.0 ].
+  implementation([
+    group: 'org.checkerframework',
+    name: 'checker',
+    version: '2.11.0'
+  ])
+  implementation([
+    group: 'org.checkerframework',
+    name: 'checker-qual',
+    version: '2.11.0'
+  ])
+  implementation([
+    group: 'org.checkerframework',
+    name: 'jdk8',
+    version: '2.11.0'
+  ])
+
+  // JUnit’s JUnit 5 v5.5.2 [ https://github.com/junit-team/junit5/tree/r5.5.2 ].
+  testImplementation([
+    group: 'org.junit.jupiter',
+    name: 'junit-jupiter-api',
+    version: '5.5.2'
+  ])
+})
+
+sourceSets({
+  main.java.srcDirs = [
+    './src/main/java',
+    './src/main/kotlin'
+  ]
+  test.java.srcDirs = [
+    './src/test/java',
+    './src/test/kotlin'
+  ]
+
+  main.kotlin.srcDirs = [
+    './src/main/kotlin',
+    './src/main/java'
+  ]
+  test.kotlin.srcDirs = [
+    './src/test/kotlin',
+    './src/test/java'
+  ]
+})
+
+test({
+  // Use JUnit Platform (AKA JUnit 5) to execute the tests [ https://docs.gradle.org/5.6.2/javadoc/org/gradle/api/tasks/testing/Test.html#useJUnitPlatform-- ].
+  useJUnitPlatform()
+})
