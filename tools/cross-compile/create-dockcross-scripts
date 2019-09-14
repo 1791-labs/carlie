@@ -16,14 +16,26 @@
 # limitations under the License.                                               #
 ################################################################################
 
-docker run --rm dockcross/windows-x64 > ./run-windows-x86_64
-chmod +x ./run-windows-x86_64
+docker run \
+  --rm \
+  dockcross/windows-x64@sha256:e7b666fead78738423bda1529a9c0c680477f89b39936b9cc219e35a8ae7fca2 \
+  > ./dockcross-windows-x64
+chmod +x ./dockcross-windows-x64
 
-docker run --rm dockcross/windows-x86 > ./run-windows-x86
-chmod +x ./run-windows-x86
+docker run \
+  --rm \
+  dockcross/windows-x86@sha256:c0828396cb79405d3187bf361d16d1b0fff156edbc1ee30922d8251d206888a7 \
+  > ./dockcross-windows-x86
+chmod +x ./dockcross-windows-x86
 
-docker run --rm dockcross/linux-x64 > ./run-linux-x86_64
-chmod +x ./run-linux-x86_64
+docker run \
+  --rm \
+  dockcross/linux-x64@sha256:12f7f116e9ac7710ffc7516c2da8d07f4bb3847c9dd44c28483feca0935dcc0f \
+  > ./dockcross-linux-x64
+chmod +x ./dockcross-linux-x64
 
-docker run --rm dockcross/linux-arm64 > ./run-linux-aarch64
-chmod +x ./run-linux-aarch64
+docker run \
+  --rm \
+  dockcross/linux-arm64@sha256:3170edb6a3b1f599bda07dad371b92fe30c932d20a01cba5cbcff233e656bc54 \
+  > ./dockcross-linux-arm64
+chmod +x ./dockcross-linux-arm64

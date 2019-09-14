@@ -16,4 +16,11 @@
 # limitations under the License.                                               #
 ################################################################################
 
-docker run --env CROSS_TRIPLE=x86_64-apple-darwin --interactive --rm --tty --volume $PWD:/workdir multiarch/crossbuild "$@"
+docker run \
+  --env CROSS_TRIPLE=x86_64-apple-darwin \
+  --interactive \
+  --rm \
+  --tty \
+  --volume $PWD:/workdir \
+  multiarch/crossbuild@sha256:84a53371f554a3b3d321c9d1dfd485b8748ad6f378ab1ebed603fe1ff01f7b4d \
+  "$@"
