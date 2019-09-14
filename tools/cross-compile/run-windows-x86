@@ -17,6 +17,5 @@
 ################################################################################
 
 ./dockcross-windows-x86 \
-  --args "--rm" \
   --image "dockcross/windows-x86@sha256:c0828396cb79405d3187bf361d16d1b0fff156edbc1ee30922d8251d206888a7" \
   bash -c "$*"

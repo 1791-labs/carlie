@@ -17,6 +17,5 @@
 ################################################################################
 
 ./dockcross-linux-x64 \
-  --args "--rm" \
   --image "dockcross/linux-x64@sha256:12f7f116e9ac7710ffc7516c2da8d07f4bb3847c9dd44c28483feca0935dcc0f" \
   bash -c "$*"
