@@ -18,6 +18,6 @@
 
 SCRIPT_DIRECTORY=$(dirname "$0")
 
-$SCRIPT_DIRECTORY/dockcross-linux-x64 \
-  --image "dockcross/linux-x64@sha256:12f7f116e9ac7710ffc7516c2da8d07f4bb3847c9dd44c28483feca0935dcc0f" \
+$SCRIPT_DIRECTORY/dockcross-windows-x86-shared \
+  --image "dockcross/windows-shared-x86@sha256:4e62a725c79c4fb216bf301c26da472f9da32f7f39c1fce20adfaa6af8f4bfd9" \
   bash -c "$*"

@@ -18,15 +18,27 @@
 
 docker run \
   --rm \
-  dockcross/windows-x64@sha256:e7b666fead78738423bda1529a9c0c680477f89b39936b9cc219e35a8ae7fca2 \
-  > ./dockcross-windows-x64
-chmod +x ./dockcross-windows-x64
+  dockcross/windows-static-x64@sha256:96f9f658692bcadc1135f272188c59efc1dcb93effe82f8af0e98443f61f1a36 \
+  > ./dockcross-windows-x64-static
+chmod +x ./dockcross-windows-x64-static
 
 docker run \
   --rm \
-  dockcross/windows-x86@sha256:c0828396cb79405d3187bf361d16d1b0fff156edbc1ee30922d8251d206888a7 \
-  > ./dockcross-windows-x86
-chmod +x ./dockcross-windows-x86
+  dockcross/windows-shared-x64@sha256:159ba7f31f80bdb9cf981b44fd458f3abab2676d112ddc0557255eea365fd4ca \
+  > ./dockcross-windows-x64-shared
+chmod +x ./dockcross-windows-x64-shared
+
+docker run \
+  --rm \
+  dockcross/windows-static-x86@sha256:6bb573265563d877597e2dd434b51dbcf3dadc743f67972120eadcfe98b26c90 \
+  > ./dockcross-windows-x86-static
+chmod +x ./dockcross-windows-x86-static
+
+docker run \
+  --rm \
+  dockcross/windows-shared-x86@sha256:4e62a725c79c4fb216bf301c26da472f9da32f7f39c1fce20adfaa6af8f4bfd9 \
+  > ./dockcross-windows-x86-shared
+chmod +x ./dockcross-windows-x86-shared
 
 docker run \
   --rm \

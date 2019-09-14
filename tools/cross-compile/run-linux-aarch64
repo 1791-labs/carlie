@@ -16,6 +16,8 @@
 # limitations under the License.                                               #
 ################################################################################
 
-./dockcross-linux-arm64 \
+SCRIPT_DIRECTORY=$(dirname "$0")
+
+$SCRIPT_DIRECTORY/dockcross-linux-arm64 \
   --image "dockcross/linux-arm64@sha256:3170edb6a3b1f599bda07dad371b92fe30c932d20a01cba5cbcff233e656bc54" \
   bash -c "$*"
