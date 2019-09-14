@@ -8,10 +8,6 @@ plugins({
 
   // Eclipse plugin [ https://docs.gradle.org/5.6.2/userguide/eclipse_plugin.html ].
   id('eclipse')
-
-  // Checker Framework plugin [ https://plugins.gradle.org/plugin/org.checkerframework ].
-  id('org.checkerframework')
-    .version('0.4.1')
 })
 
 repositories({
