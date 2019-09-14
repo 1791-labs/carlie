@@ -52,6 +52,12 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+version = {
+  File versionFile = file 'VERSION'
+  String versionText = versionFile.getText 'UTF-8'
+  versionText.trim()
+}()
+
 sourceSets {
   main.java.srcDirs = [
     './src/main/java',
