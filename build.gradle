@@ -55,6 +55,9 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+group = 'io.seventeenninetyone'
+name = 'carlie'
+
 version = {
   File versionFile = file 'VERSION'
   String versionText = versionFile.getText 'UTF-8'
