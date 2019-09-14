@@ -74,3 +74,8 @@ test({
   // Use JUnit Platform (AKA JUnit 5) to execute the tests [ https://docs.gradle.org/5.6.2/javadoc/org/gradle/api/tasks/testing/Test.html#useJUnitPlatform-- ].
   useJUnitPlatform()
 })
+
+wrapper({
+  distributionType = Wrapper.DistributionType.ALL
+  gradleVersion = '5.6.2'
+})
