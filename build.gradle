@@ -37,23 +37,6 @@ dependencies({
     version: '28.1-jre'
   ])
 
-  // The Checker Framework v2.11.0 [ https://github.com/typetools/checker-framework/tree/checker-framework-2.11.0 ].
-  implementation([
-    group: 'org.checkerframework',
-    name: 'checker',
-    version: '2.11.0'
-  ])
-  implementation([
-    group: 'org.checkerframework',
-    name: 'checker-qual',
-    version: '2.11.0'
-  ])
-  implementation([
-    group: 'org.checkerframework',
-    name: 'jdk8',
-    version: '2.11.0'
-  ])
-
   // JUnit’s JUnit 5 v5.5.2 [ https://github.com/junit-team/junit5/tree/r5.5.2 ].
   testImplementation([
     group: 'org.junit.jupiter',
