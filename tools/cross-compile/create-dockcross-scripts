@@ -27,9 +27,3 @@ chmod +x ./run-linux-x86_64
 
 docker run --rm dockcross/linux-arm64 > ./run-linux-aarch64
 chmod +x ./run-linux-aarch64
-
-docker run --rm dockcross/linux-armv7 > ./run-linux-armv7
-chmod +x ./run-linux-armv7
-
-docker run --rm dockcross/linux-armv6 > ./run-linux-armv6
-chmod +x ./run-linux-armv6
