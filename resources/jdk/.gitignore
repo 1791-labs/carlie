@@ -1,0 +1,16 @@
+*/**
+!linux/aarch64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.tar.gz
+!linux/aarch64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.tar.gz.sha256.txt
+!linux/aarch64/**
+!linux/x86_64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.tar.gz
+!linux/x86_64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.tar.gz.sha256.txt
+!linux/x86_64/**
+!mac/x86_64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.tar.gz
+!mac/x86_64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.tar.gz.sha256.txt
+!mac/x86_64/**
+!windows/x86-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.zip
+!windows/x86-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.zip.sha256.txt
+!windows/x86/**
+!windows/x86_64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.zip
+!windows/x86_64-adoptopenjdk-openjdk-jdk-hotspot-8u222-b10.zip.sha256.txt
+!windows/x86_64/**
