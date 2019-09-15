@@ -24,14 +24,7 @@
 
 
 #include <carlie/common.h>
-
-#ifndef __cplusplus
 #include <stdio.h>
-#else
-#include <cstdio>
-
-using namespace std;
-#endif
 
 
 
@@ -48,12 +41,6 @@ using namespace std;
 
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-
 /*
  *******************************************************************************
  * Class:     io_seventeenninetyone_carlie_Dummy                               *
@@ -63,12 +50,6 @@ extern "C" {
  */
 JNI_DEFINE_METHOD(void, printHelloWorld)(jni_environment_handle_t,
                                          jni_class_t);
-
-
-
-#ifdef __cplusplus
-}
-#endif
 
 
 
