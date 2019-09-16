@@ -16,6 +16,8 @@
  *******************************************************************************
  */
 
+import groovy.text.SimpleTemplateEngine
+
 plugins {
   // Java plugin [ https://docs.gradle.org/5.6.2/userguide/java_plugin.html ].
   id 'java'
@@ -87,6 +89,20 @@ test {
   // Use JUnit Platform (AKA JUnit 5) to execute the tests [ https://docs.gradle.org/5.6.2/javadoc/org/gradle/api/tasks/testing/Test.html#useJUnitPlatform-- ].
   useJUnitPlatform()
 }
+
+task generateRuntimeProjectFile {
+  def templateFile = file 'src/main/kotlin/io/seventeenninetyone/Project.kt.txt'
+  def templateText = templateFile.getText 'UTF-8'
+  Map<String, Object> templateBinding = [ 'carlieVersion': "${project.version}" ]
+  def templateEngine = new SimpleTemplateEngine()
+  def template = templateEngine.createTemplate templateText
+  def processedTemplate = template.make templateBinding
+  String projectFileContents = "${processedTemplate}"
+  def projectFile = file 'src/main/kotlin/io/seventeenninetyone/Project.kt'
+  projectFile.setText projectFileContents, 'UTF-8'
+}
+
+tasks.compileKotlin.dependsOn generateRuntimeProjectFile
 
 wrapper {
   distributionType = Wrapper.DistributionType.ALL
