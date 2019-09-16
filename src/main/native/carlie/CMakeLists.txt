@@ -27,8 +27,9 @@ cmake_minimum_required(
 
 
 ################################################################################
-# Get the build target OS.                                                     #
+# Get the build target architecture and OS.                                    #
 ################################################################################
+set(CARLIE_BUILD_TARGET_ARCHITECTURE $ENV{CARLIE_BUILD_TARGET_ARCHITECTURE})
 set(CARLIE_BUILD_TARGET_OS $ENV{CARLIE_BUILD_TARGET_OS})
 
 
@@ -76,7 +77,8 @@ endif()
 ################################################################################
 # If a build type isn’t provided to CMake, default to the build type provided  #
 # by the environment variable: `CARLIE_CMAKE_BUILD_TYPE`; otherwise, default   #
-# to being a release build.                                                    #
+# to being a release build. If the build type is invalid or not supported,     #
+# default to being a release build.                                            #
 ################################################################################
 if(NOT CMAKE_BUILD_TYPE)
   set(CARLIE_CMAKE_BUILD_TYPE $ENV{CARLIE_CMAKE_BUILD_TYPE})
@@ -86,6 +88,10 @@ if(NOT CMAKE_BUILD_TYPE)
   else()
     set(CMAKE_BUILD_TYPE "Release")
   endif()
+endif()
+
+if(NOT CMAKE_BUILD_TYPE MATCHES "Debug|Release")
+  set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 
@@ -127,21 +133,6 @@ macro(use_c99_c_standard)
 endmacro(use_c99_c_standard)
 
 use_c99_c_standard()
-
-
-
-################################################################################
-# If this is a debug build, tell the compiler to generate debug information    #
-# and disable as many optimizations as possible; otherwise, if this is a       #
-# release build, tell the compiler to optimize like there’s no tomorrow.       #
-################################################################################
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  target_compile_options(carlie_jni PRIVATE "-g"
-                                            "-O0")
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-  target_compile_options(carlie_jni PRIVATE "-flto"
-                                            "-O3")
-endif()
 
 
 
@@ -199,14 +190,59 @@ target_include_directories(
 
 
 ################################################################################
+# If this is a debug build, tell the compiler to generate debug information    #
+# and disable as many optimizations as possible; otherwise, if this is a       #
+# release build, tell the compiler to optimize like there’s no tomorrow.       #
+################################################################################
+set(CARLIE_PROJECT_COMPILER_OPTIONS "")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(CMAKE_C_FLAGS_DEBUG "")
+
+  list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-g"
+                                              "-O0")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set(CMAKE_C_FLAGS_RELEASE "")
+
+  if(NOT CARLIE_BUILD_TARGET_OS STREQUAL "windows")
+    # LTO (link-time optimization) is, in my experience, quite buggy on Windows
+    # (i.e., MinGW). Revisit this.
+    list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-flto")
+  endif()
+
+  list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-O3")
+endif()
+
+target_compile_options(carlie_jni PRIVATE ${CARLIE_PROJECT_COMPILER_OPTIONS})
+
+
+
+################################################################################
 # Set the project’s main compiler options.                                     #
 ################################################################################
-target_compile_options(carlie_jni PRIVATE "-pedantic"
-                                          "-pedantic-errors"
-                                          "-pthread"
-                                          "-Wall"
-                                          "-Werror"
-                                          "-Wextra")
+set(CARLIE_PROJECT_COMPILER_OPTIONS "")
+
+if(CARLIE_BUILD_TARGET_ARCHITECTURE STREQUAL "x86")
+  list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-m32")
+elseif(CARLIE_BUILD_TARGET_ARCHITECTURE STREQUAL "x86_64")
+  list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-m64")
+endif()
+
+list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-pedantic"
+                                            "-pedantic-errors"
+                                            "-pthread"
+                                            "-Wall"
+                                            "-Werror"
+                                            "-Wextra")
+
+# if(NOT CARLIE_BUILD_TARGET_OS STREQUAL "windows")
+#   list(APPEND CARLIE_PROJECT_COMPILER_OPTIONS "-fPIC"
+#                                               "-fvisibility=hidden")
+# endif()
+set_target_properties(carlie_jni PROPERTIES C_VISIBILITY_PRESET "hidden"
+                                            POSITION_INDEPENDENT_CODE ON)
+
+target_compile_options(carlie_jni PRIVATE ${CARLIE_PROJECT_COMPILER_OPTIONS})
 
 
 
@@ -235,18 +271,18 @@ set(CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "")
 list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "pthread")
 
 if(CARLIE_BUILD_TARGET_OS STREQUAL "linux")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "dl")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "nsl")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "rt")
+  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "dl"
+                                                                    "nsl"
+                                                                    "rt")
 endif()
 
 if(CARLIE_BUILD_TARGET_OS STREQUAL "windows")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "iphlpapi")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "psapi")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "shell32")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "user32")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "userenv")
-  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "ws2_32")
+  list(APPEND CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES "iphlpapi"
+                                                                    "psapi"
+                                                                    "shell32"
+                                                                    "user32"
+                                                                    "userenv"
+                                                                    "ws2_32")
 endif()
 
 
@@ -258,8 +294,8 @@ set(CARLIE_BUILD_JVM_NATIVE_LIBRARIES_DIRECTORY $ENV{CARLIE_BUILD_JVM_NATIVE_LIB
 
 list(APPEND CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES "pthread")
 
-list(APPEND CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES ${CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES})
-list(APPEND CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES "${CARLIE_BUILD_JVM_NATIVE_LIBRARIES_DIRECTORY}/libuv.a")
+list(APPEND CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES ${CARLIE_PROJECT_UV_NATIVE_LIBRARY_LIBRARY_DEPENDENCIES}
+                                                       "${CARLIE_BUILD_JVM_NATIVE_LIBRARIES_DIRECTORY}/libuv.a")
 
 list(REMOVE_DUPLICATES CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES)
 
@@ -282,20 +318,30 @@ unset(TMP_CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES)
 ################################################################################
 # Set the project’s linker flags.                                              #
 ################################################################################
-set(CARLIE_PROJECT_LINKER_FLAGS "")
+set(CARLIE_PROJECT_LINKER_OPTIONS "")
 
 if(CARLIE_BUILD_TARGET_OS MATCHES "linux|windows")
-  list(APPEND CARLIE_PROJECT_LINKER_FLAGS "-Wl,--whole-archive")
-  list(APPEND CARLIE_PROJECT_LINKER_FLAGS ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES})
-  list(APPEND CARLIE_PROJECT_LINKER_FLAGS "-Wl,--no-whole-archive")
+  if(CARLIE_BUILD_TARGET_OS STREQUAL "windows" AND
+     CARLIE_BUILD_TARGET_ARCHITECTURE STREQUAL "x86")
+    list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,--kill-at")
+  endif()
+
+  list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-static-libgcc")
+
+  list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,--whole-archive"
+                                            ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES}
+                                            "-Wl,--no-whole-archive")
+  # list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,--whole-archive"
+  #                                           ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES})
+elseif(CARLIE_BUILD_TARGET_OS STREQUAL "mac")
+  # foreach(dependency ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES})
+  #   list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,-force_load,${dependency}")
+  # endforeach(dependency)
+  list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,-all_load"
+                                            ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES})
 endif()
 
-if(CARLIE_BUILD_TARGET_OS STREQUAL "mac")
-  list(APPEND CARLIE_PROJECT_LINKER_FLAGS "-Wl,-all_load")
-  list(APPEND CARLIE_PROJECT_LINKER_FLAGS ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES})
-endif()
-
-target_link_libraries(carlie_jni PRIVATE ${CARLIE_PROJECT_LINKER_FLAGS})
+target_link_libraries(carlie_jni PRIVATE ${CARLIE_PROJECT_LINKER_OPTIONS})
 
 
 
