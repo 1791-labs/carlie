@@ -16,20 +16,12 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie;
+package io.seventeenninetyone.carlie.utilities
 
-import io.seventeenninetyone.carlie.utilities.NativeLibraryLoader;
-
-public class Dummy
-{
-  static {
-    NativeLibraryLoader.extractAndLoad();
+class NativeLibraryLoaderPlatformNotSupportedException : RuntimeException {
+  companion object {
+    const val serialVersionUID = 1L
   }
 
-  public static void main(String[] arguments)
-  {
-    Dummy.printHelloWorld();
-  }
-
-  native private static void printHelloWorld();
+  constructor(message: String) : super(message) {}
 }

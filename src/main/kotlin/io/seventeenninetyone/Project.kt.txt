@@ -16,20 +16,10 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie;
+package io.seventeenninetyone
 
-import io.seventeenninetyone.carlie.utilities.NativeLibraryLoader;
-
-public class Dummy
-{
-  static {
-    NativeLibraryLoader.extractAndLoad();
+class Project {
+  companion object {
+    const val CARLIE_VERSION = "${carlieVersion}"
   }
-
-  public static void main(String[] arguments)
-  {
-    Dummy.printHelloWorld();
-  }
-
-  native private static void printHelloWorld();
 }
