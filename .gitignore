@@ -523,4 +523,5 @@ GitHub.sublime-settings
 .gradle/
 .project
 .vscode/
+cmake-build/
 # ---[ / Custom ]---
