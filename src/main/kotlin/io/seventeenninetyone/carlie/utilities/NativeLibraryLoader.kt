@@ -113,7 +113,7 @@ class NativeLibraryLoader {
       val extractedLibraryFileChannel = extractedLibraryFileOutputStream!!.channel
       this.extractedLibraryFileLock = extractedLibraryFileChannel.lock()
       val libraryFileInputStream = this.CLASS.getResourceAsStream(this.libraryFilePath)
-      val libraryFileInputStreamBytesLength = OperatingSystem.getPageSizeOrDefault(4096.toUInt())
+      val libraryFileInputStreamBytesLength = OperatingSystem.getPageSizeOrDefault(4096u)
       val libraryFileInputStreamBytes = ByteArray(libraryFileInputStreamBytesLength.toInt())
       var libraryFileInputStreamBytesReadCount: Int
       try {

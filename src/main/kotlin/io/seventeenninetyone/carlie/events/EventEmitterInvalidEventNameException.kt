@@ -20,7 +20,7 @@ package io.seventeenninetyone.carlie.events
 
 class EventEmitterInvalidEventNameException : Exception {
   companion object {
-    @JvmField val serialVersionUID = 1L
+    const val serialVersionUID = 1L
   }
 
   constructor() : super() {}
