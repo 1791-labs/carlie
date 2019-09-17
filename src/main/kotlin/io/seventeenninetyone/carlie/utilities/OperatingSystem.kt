@@ -25,7 +25,7 @@ class OperatingSystem {
   companion object {
     @JvmStatic val pageSize: UInt by lazy getPageSize@ {
       if (this.UNSAFE_CLASS == null) {
-        return@getPageSize 0.toUInt()
+        return@getPageSize 0u
       }
       // http://www.docjar.com/docs/api/sun/misc/Unsafe.html#pageSize
       var size = this.UNSAFE_CLASS!!.pageSize()
@@ -68,7 +68,7 @@ class OperatingSystem {
 
     @JvmStatic fun getPageSizeOrDefault(defaultSize: UInt): UInt {
       return (
-        if (this.pageSize > 0.toUInt()) {
+        if (this.pageSize > 0u) {
           this.pageSize
         } else {
           defaultSize
