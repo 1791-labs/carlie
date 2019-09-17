@@ -136,6 +136,7 @@ class NativeLibraryLoader {
       } catch (exception: UnsatisfiedLinkError) {
         throw NativeLibraryLoaderLibraryLoadFailureException("The native library \"${this.LIBRARY_NAME}\" couldn’t be loaded.")
       }
+      this.isLoaded = true
     }
 
     protected fun finalize() {
