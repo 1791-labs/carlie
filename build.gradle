@@ -60,8 +60,8 @@ java {
 group = 'io.seventeenninetyone'
 
 version = {
-  File versionFile = file 'VERSION'
-  String versionText = versionFile.getText 'UTF-8'
+  def versionFile = file 'VERSION'
+  def versionText = versionFile.getText 'UTF-8'
   versionText.trim()
 }()
 
