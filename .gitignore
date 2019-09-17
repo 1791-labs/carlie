@@ -524,4 +524,6 @@ GitHub.sublime-settings
 .project
 .vscode/
 cmake-build/
+jni-header-gradle-build/
+jni-headers/
 # ---[ / Custom ]---

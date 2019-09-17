@@ -18,6 +18,13 @@
 
 set -x
 
-cd $CARLIE_CMAKE_BUILD_PATH
-cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON $CARLIE_PROJECT_NATIVE_SOURCES
-cmake --build . --clean-first --target install
+################################################################################
+# Example usage:                                                               #
+# ./generate-jni-header com.example.some.Class some/file/path.jni.h            #
+################################################################################
+
+JNI_HEADERS_DIRECTORY=$CARLIE_PROJECT_DIRECTORY/jni-headers
+
+cd $CARLIE_PROJECT_DIRECTORY
+mkdir -p $JNI_HEADERS_DIRECTORY
+$JAVA_HOME/bin/javah -classpath "$(./gradlew --quiet --system-prop org.gradle.project.buildDir=$CARLIE_PROJECT_DIRECTORY/jni-header-gradle-build printRuntimeClasspath)" -jni -o $JNI_HEADERS_DIRECTORY/$2 $1
