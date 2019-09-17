@@ -16,12 +16,12 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.events
+package io.seventeenninetyone.carlie.utilities.native_library_loader
 
-class EventEmitterInvalidEventNameException : Exception {
+class LibraryLoadFailureException : RuntimeException {
   companion object {
     const val serialVersionUID = 1L
   }
 
-  constructor() : super() {}
+  constructor(message: String) : super(message) {}
 }

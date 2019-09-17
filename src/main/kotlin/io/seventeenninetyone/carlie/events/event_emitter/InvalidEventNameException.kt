@@ -16,53 +16,12 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities
+package io.seventeenninetyone.carlie.events.event_emitter
 
-import com.sun.jna.Platform
-
-class NativeLibraryLoaderPlatform {
+class InvalidEventNameException : Exception {
   companion object {
-    val ARCHITECTURE: String?
-    val OS: String?
-
-    init {
-      when {
-        (Platform.isLinux() &&
-         Platform.is64Bit()) -> {
-          this.OS = "linux"
-          this.ARCHITECTURE = when {
-            Platform.isARM() -> "aarch64"
-            Platform.isIntel() -> "x86_64"
-            else -> null
-          }
-        }
-        (Platform.isMac() &&
-         Platform.isIntel() &&
-         Platform.is64Bit()) -> {
-          this.ARCHITECTURE = "x86_64"
-          this.OS = "mac"
-        }
-        (Platform.isWindows() &&
-         Platform.isIntel()) -> {
-          this.OS = "windows"
-          this.ARCHITECTURE = (
-            if (Platform.is64Bit()) {
-              "x86_64"
-            } else {
-              "x86"
-            }
-          )
-        }
-        else -> {
-          this.ARCHITECTURE = null
-          this.OS = null
-        }
-      }
-    }
-
-    @JvmStatic fun isSupported(): Boolean {
-      return ((this.ARCHITECTURE != null) &&
-              (this.OS != null))
-    }
+    const val serialVersionUID = 1L
   }
+
+  constructor() : super() {}
 }
