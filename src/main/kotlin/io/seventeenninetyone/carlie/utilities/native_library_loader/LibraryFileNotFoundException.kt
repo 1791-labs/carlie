@@ -16,9 +16,9 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities
+package io.seventeenninetyone.carlie.utilities.native_library_loader
 
-class NativeLibraryLoaderLibraryLoadFailureException : RuntimeException {
+class LibraryFileNotFoundException : RuntimeException {
   companion object {
     const val serialVersionUID = 1L
   }

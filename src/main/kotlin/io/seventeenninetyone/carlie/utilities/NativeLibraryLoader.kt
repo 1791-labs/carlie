@@ -18,8 +18,11 @@
 
 package io.seventeenninetyone.carlie.utilities
 
-import com.sun.jna.Platform
 import io.seventeenninetyone.Project
+import io.seventeenninetyone.carlie.utilities.native_library_loader.LibraryFileNotFoundException
+import io.seventeenninetyone.carlie.utilities.native_library_loader.LibraryLoadFailureException
+import io.seventeenninetyone.carlie.utilities.native_library_loader.Platform
+import io.seventeenninetyone.carlie.utilities.native_library_loader.PlatformNotSupportedException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -47,10 +50,10 @@ class NativeLibraryLoader {
       }"
     }
     private val platformArchitecture: String by lazy {
-      NativeLibraryLoaderPlatform.ARCHITECTURE!!
+      Platform.ARCHITECTURE!!
     }
     private val platformOs: String by lazy {
-      NativeLibraryLoaderPlatform.OS!!
+      Platform.OS!!
     }
     private val temporaryDirectoryFile: File by lazy {
       val rootDirectoryPath = System.getProperty("java.io.tmpdir")
@@ -64,9 +67,8 @@ class NativeLibraryLoader {
     }
 
     init {
-      if (! NativeLibraryLoaderPlatform.isSupported()) {
-        val sluggifiedPlatformName = Platform.RESOURCE_PREFIX
-        throw NativeLibraryLoaderPlatformNotSupportedException("The native library \"${this.LIBRARY_NAME}\" doesn’t support this platform (${sluggifiedPlatformName}) and couldn’t be loaded.")
+      if (! Platform.isSupported()) {
+        throw PlatformNotSupportedException("The native library \"${this.LIBRARY_NAME}\" doesn’t support this platform (${Platform.sluggifiedName}) and couldn’t be loaded.")
       }
     }
 
@@ -102,7 +104,7 @@ class NativeLibraryLoader {
       if (this.isLoaded) return
       this.cleanLeftoverMess()
       if (! this.libraryFileExists) {
-        throw NativeLibraryLoaderLibraryFileNotFoundException("The library file for the native library \"${this.LIBRARY_NAME}\" wasn’t found.")
+        throw LibraryFileNotFoundException("The library file for the native library \"${this.LIBRARY_NAME}\" wasn’t found.")
       }
       this.temporaryDirectoryFile.mkdirs()
       val extractedLibraryFile = File(this.temporaryDirectoryFile, "${this.LIBRARY_NAME}-${this.LIBRARY_VERSION}-${
@@ -134,7 +136,7 @@ class NativeLibraryLoader {
       try {
         System.load(extractedLibraryFile.absolutePath)
       } catch (exception: UnsatisfiedLinkError) {
-        throw NativeLibraryLoaderLibraryLoadFailureException("The native library \"${this.LIBRARY_NAME}\" couldn’t be loaded.")
+        throw LibraryLoadFailureException("The native library \"${this.LIBRARY_NAME}\" couldn’t be loaded.")
       }
     }
 

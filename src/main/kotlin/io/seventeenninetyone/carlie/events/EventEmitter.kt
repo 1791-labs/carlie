@@ -20,6 +20,7 @@ package io.seventeenninetyone.carlie.events
 
 import com.google.common.collect.Lists
 import com.google.common.collect.Maps
+import io.seventeenninetyone.carlie.events.event_emitter.InvalidEventNameException
 
 typealias EventHandler = EventHandlerFunction<@ParameterName(name = "data") Any?, Void?>
 typealias EventHandlerBase = Function1<@ParameterName(name = "data") Any?, Void?>
@@ -35,15 +36,15 @@ class EventEmitter {
     this.onceHandlers = Maps.newConcurrentMap()
   }
 
-  @Throws(EventEmitterInvalidEventNameException::class)
+  @Throws(InvalidEventNameException::class)
   fun emitEvent(name: String) = this.emitEvent(name, null)
 
-  @Throws(EventEmitterInvalidEventNameException::class)
+  @Throws(InvalidEventNameException::class)
   fun emitEvent(name: String,
                 data: Any?) {
     val name1 = name.trim()
     if (name1 == "") {
-      throw EventEmitterInvalidEventNameException()
+      throw InvalidEventNameException()
     }
     val handlers = this.handlers[name1]
     if (handlers == null) return
@@ -83,13 +84,13 @@ class EventEmitter {
     return handlersKeys.toTypedArray()
   }
 
-  @Throws(EventEmitterInvalidEventNameException::class)
+  @Throws(InvalidEventNameException::class)
   fun onceEvent(name: String,
                 handler: EventHandler) {
     return this.onceEvent(name, handler as EventHandlerBase)
   }
 
-  @Throws(EventEmitterInvalidEventNameException::class)
+  @Throws(InvalidEventNameException::class)
   fun onceEvent(name: String,
                 handler: EventHandlerBase) {
     fun wrappedHandler(data: Any?): Void? {
@@ -102,18 +103,18 @@ class EventEmitter {
     this.onEvent(name, ::wrappedHandler)
   }
 
-  @Throws(EventEmitterInvalidEventNameException::class)
+  @Throws(InvalidEventNameException::class)
   fun onEvent(name: String,
               handler: EventHandler) {
     return this.onEvent(name, handler as EventHandlerBase)
   }
 
-  @Throws(EventEmitterInvalidEventNameException::class)
+  @Throws(InvalidEventNameException::class)
   fun onEvent(name: String,
               handler: EventHandlerBase) {
     val name1 = name.trim()
     if (name1 == "") {
-      throw EventEmitterInvalidEventNameException()
+      throw InvalidEventNameException()
     }
     var handlers = this.handlers[name1]
     if (handlers == null) {
