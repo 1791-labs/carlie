@@ -16,41 +16,23 @@
  *******************************************************************************
  */
 
+package io.seventeenninetyone.carlie.tcp_server
 
-
-#ifndef IO_SEVENTEENNINETYONE_CARLIE_DUMMY_CLASS_H
-#define IO_SEVENTEENNINETYONE_CARLIE_DUMMY_CLASS_H 1
-
-
-
-#include <carlie/common.h>
-#include <stdio.h>
-
-
-
-/*
- *******************************************************************************
- * JVM and JNI-related macros.                                                 *
- *******************************************************************************
+/**
+ * The functional interface for a function used as an event handler for when a
+ * server has closed or when a server’s connections have closed.
+ *
+ * @author Jay B.
+ * @see [io.seventeenninetyone.carlie.TcpServer.onceClosed]
+ * @see [io.seventeenninetyone.carlie.TcpServer.Connection.onceClosed]
  */
-#define JVM_PACKAGE_SIGNATURE JVM_ROOT_PACKAGE_SIGNATURE
-#define JVM_CLASS_NAME Dummy
+@FunctionalInterface
+interface ClosedEventHandlerFunction {
+  fun handle()
 
-#define JNI_DEFINE_METHOD(return_type, method_signature)                                   \
-  JNI_DEFINE_METHOD0(return_type, JVM_PACKAGE_SIGNATURE, JVM_CLASS_NAME, method_signature)
-
-
-
-/*
- *******************************************************************************
- * Class:     io_seventeenninetyone_carlie_Dummy                               *
- * Method:    printHelloWorld                                                  *
- * Signature: ()V                                                              *
- *******************************************************************************
- */
-JNI_DEFINE_METHOD(void, printHelloWorld)(jni_environment_handle_t,
-                                         jni_class_t);
-
-
-
-#endif
+  @JvmSynthetic
+  @JvmDefault
+  operator fun invoke() {
+    return this.handle()
+  }
+}

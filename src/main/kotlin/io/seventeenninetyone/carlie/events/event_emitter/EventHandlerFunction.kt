@@ -16,6 +16,15 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.events
+package io.seventeenninetyone.carlie.events.event_emitter
 
-interface EventHandlerFunction<in P, out R> : Function1<P, R> {}
+@FunctionalInterface
+interface EventHandlerFunction {
+  fun handle(data: Any?)
+
+  @JvmSynthetic
+  @JvmDefault
+  operator fun invoke(data: Any?) {
+    return this.handle(data)
+  }
+}

@@ -16,16 +16,23 @@
  *******************************************************************************
  */
 
+package io.seventeenninetyone.carlie.tcp_server
 
+/**
+ * The functional interface for a function used as an event handler for errors
+ * occurring on a server or errors occurring on a server’s connections.
+ *
+ * @author Jay B.
+ * @see [io.seventeenninetyone.carlie.TcpServer.onErrorOccurred]
+ * @see [io.seventeenninetyone.carlie.TcpServer.Connection.onErrorOccurred]
+ */
+@FunctionalInterface
+interface ErrorOccurredEventHandlerFunction {
+  fun handle(error: Throwable)
 
-#include <carlie/dummy-class.h>
-
-
-
-JNI_DEFINE_METHOD(void, printHelloWorld)(jni_environment_handle_t environment,
-                                         jni_class_t dummy_class)
-{
-  INTERNAL_UNUSED_SYMBOL(environment);
-  INTERNAL_UNUSED_SYMBOL(dummy_class);
-  printf("Hello, world!\n");
+  @JvmSynthetic
+  @JvmDefault
+  operator fun invoke(error: Throwable) {
+    return this.handle(error)
+  }
 }

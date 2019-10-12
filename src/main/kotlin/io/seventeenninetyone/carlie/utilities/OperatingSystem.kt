@@ -23,12 +23,15 @@ import sun.misc.Unsafe
 
 class OperatingSystem {
   companion object {
-    @JvmStatic val pageSize: UInt by lazy getPageSize@ {
-      if (this.UNSAFE_CLASS == null) {
+    private val UNSAFE_CLASS_CLASS = Unsafe::class.java
+
+    @JvmStatic
+    val pageSize by lazy getPageSize@ {
+      if (this.unsafeClass == null) {
         return@getPageSize 0u
       }
       // http://www.docjar.com/docs/api/sun/misc/Unsafe.html#pageSize
-      var size = this.UNSAFE_CLASS!!.pageSize()
+      var size = this.unsafeClass!!.pageSize()
       // Is this actually possible? Does the `pageSize` method provide any sign
       // guarantees?
       // NOTE: Just being safe since we are dealing with signed integers here
@@ -38,7 +41,8 @@ class OperatingSystem {
       }
       size.toUInt()
     }
-    private val UNSAFE_CLASS: Unsafe? by lazy getUnsafeClass@ {
+
+    private val unsafeClass by lazy getUnsafeClass@ {
       val unsafeClassTheUnsafeField: Field
       try {
         unsafeClassTheUnsafeField = this.UNSAFE_CLASS_CLASS.getDeclaredField("theUnsafe")
@@ -60,13 +64,14 @@ class OperatingSystem {
       }
       unsafeClass
     }
-    private val UNSAFE_CLASS_CLASS = Unsafe::class.java
 
-    @JvmStatic fun getPageSizeOrDefault(defaultSize: Int): Int {
+    @JvmStatic
+    fun getPageSizeOrDefault(defaultSize: Int): Int {
       return this.getPageSizeOrDefault(defaultSize.toUInt()).toInt()
     }
 
-    @JvmStatic fun getPageSizeOrDefault(defaultSize: UInt): UInt {
+    @JvmStatic
+    fun getPageSizeOrDefault(defaultSize: UInt): UInt {
       return (
         if (this.pageSize > 0u) {
           this.pageSize

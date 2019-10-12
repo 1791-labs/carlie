@@ -23,5 +23,6 @@ class LibraryFileNotFoundException : RuntimeException {
     const val serialVersionUID = 1L
   }
 
-  constructor(message: String) : super(message) {}
+  constructor(message: String):
+    super(message)
 }

@@ -16,13 +16,19 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities.native_library_loader
+package io.seventeenninetyone.carlie.tcp_server
 
-class LibraryLoadFailureException : RuntimeException {
+/**
+ * An exception thrown when an operation isn’t supported on a closed server.
+ *
+ * @author Jay B.
+ * @see [io.seventeenninetyone.carlie.TcpServer.listen]
+ */
+class ServerClosedException : Exception {
   companion object {
     const val serialVersionUID = 1L
   }
 
-  constructor(message: String):
-    super(message)
+  constructor():
+    super()
 }
