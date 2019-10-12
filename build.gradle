@@ -37,14 +37,14 @@ plugins {
   // Eclipse plugin [ https://docs.gradle.org/5.6.2/userguide/eclipse_plugin.html ].
   id 'eclipse'
 
-  // Maven plugin [ https://docs.gradle.org/5.6.2/userguide/maven_plugin.html ].
-  id 'maven'
-
   // Maven plugin [ https://docs.gradle.org/5.6.2/userguide/publishing_maven.html ].
   id 'maven-publish'
 
   // Bintray plugin [ https://plugins.gradle.org/plugin/com.jfrog.bintray ].
   id 'com.jfrog.bintray' version '1.8.4'
+
+  // Shadow plugin [ https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow ].
+  id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
 java {
@@ -80,24 +80,36 @@ sourceSets {
   ]
 }
 
+shadowJar {
+  baseName = project.name
+  classifier = null
+  minimize()
+  relocate 'com.google', "${project.group}.${project.name}_shadow.com.google"
+  relocate 'com.sun.jna', "${project.group}.${project.name}_shadow.com.sun.jna"
+  relocate 'kotlin', "${project.group}.${project.name}_shadow.kotlin"
+  version = project.version
+}
+
 publishing {
   publications {
-    BintrayPublication(MavenPublication) {
-      artifactId project.name
-      from project.components.java
-      groupId project.group
-      version project.version
+    // BintrayPublication(MavenPublication) {
+    //   artifactId project.name
+    //   from project.components.java
+    //   groupId project.group
+    //   version project.version
+    // }
+    ShadowBintrayPublication(MavenPublication) {
+      publication ->
+        project.shadow.component publication
     }
   }
 }
 
 bintray {
-  key = System.getenv('BINTRAY_API_KEY')
+  key = System.getenv 'BINTRAY_API_KEY'
 
   pkg {
     desc = 'A fast, asynchronous, and easy-to-use TCP server for the JVM (built on libuv).'
-    // githubRepo = '1791-labs/carlie'
-    // githubReleaseNotesFile = 'README.md'
     issueTrackerUrl = 'https://github.com/1791-labs/carlie/issues'
     licenses = [ 'Apache-2.0' ]
     name = project.name
@@ -117,9 +129,10 @@ bintray {
     websiteUrl = 'https://github.com/1791-labs/carlie'
   }
 
-  publications = [ 'BintrayPublication' ]
+  // publications = [ 'BintrayPublication' ]
+  publications = [ 'ShadowBintrayPublication' ]
   publish = true
-  user = System.getenv('BINTRAY_USER')
+  user = System.getenv 'BINTRAY_USER'
 }
 
 task compileCSources {
@@ -134,10 +147,6 @@ task compileCSources {
     platforms.each {
       platform ->
         project.exec {
-          // commandLine = [
-          //   "${project.projectDir}/tools/cross-compile/run-${platform}",
-          //   '/home/project/cmake-run-build',
-          // ]
           commandLine = [
             "${project.projectDir}/gradle-compile-c-sources-script",
             "${project.projectDir}",
@@ -151,6 +160,11 @@ task compileCSources {
 test {
   // Use JUnit Platform (AKA JUnit 5) to execute the tests [ https://docs.gradle.org/5.6.2/javadoc/org/gradle/api/tasks/testing/Test.html#useJUnitPlatform-- ].
   useJUnitPlatform()
+}
+
+tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask) {
+  preserveFileTimestamps = false
+  reproducibleFileOrder = true
 }
 
 // task dokkaJava(type: org.jetbrains.dokka.gradle.DokkaTask) {
@@ -289,8 +303,12 @@ task printRuntimeClasspath {
   }
 }
 
-tasks.build.dependsOn tasks.compileCSources
-tasks.build.dependsOn tasks.generateDocumentation
+tasks.jar.enabled = false
+
+tasks.assemble.dependsOn tasks.shadowJar
+
+tasks.classes.dependsOn tasks.compileCSources
+tasks.classes.dependsOn tasks.generateDocumentation
 
 tasks.compileKotlin.dependsOn tasks.generateRuntimeProjectFile
 
