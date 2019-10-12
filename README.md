@@ -1,6 +1,6 @@
 # Project: Carlie
 
-> A fast, asynchronous, and *easy-to-use* TCP server for the __JVM__ (built on [__libuv__](https://libuv.org)).
+> A fast, asynchronous, and *easy-to-use* TCP server library for the __JVM__ (built on [__libuv__](https://libuv.org)).
 
 ## Installation
 
