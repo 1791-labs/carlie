@@ -21,6 +21,7 @@ dependencies {
 ```
 
 __Maven:__
+
 ```xml
 <dependency>
   <groupId>io.seventeenninetyone</groupId>
@@ -29,6 +30,10 @@ __Maven:__
   <type>pom</type>
 </dependency>
 ```
+
+__JAR:__
+
+Check out the [releases page](https://github.com/1791-labs/carlie/releases).
 
 ## Usage
 
