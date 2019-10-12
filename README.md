@@ -16,7 +16,7 @@ __Gradle:__
 
 ```groovy
 dependencies {
-  implementation 'io.seventeenninetyone:carlie:0.1.0'
+  implementation 'io.seventeenninetyone:carlie:0.1.1'
 }
 ```
 
@@ -26,7 +26,7 @@ __Maven:__
 <dependency>
   <groupId>io.seventeenninetyone</groupId>
   <artifactId>carlie</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <type>pom</type>
 </dependency>
 ```
