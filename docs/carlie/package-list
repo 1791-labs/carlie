@@ -1,0 +1,6 @@
+$dokka.format:gfm
+$dokka.linkExtension:md
+
+io.seventeenninetyone
+io.seventeenninetyone.carlie
+io.seventeenninetyone.carlie.tcp_server

@@ -83,6 +83,104 @@ $RECYCLE.BIN/
 
 
 
+# ---[ C.gitignore (https://raw.githubusercontent.com/github/gitignore/85bf08b/C.gitignore) ]---
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+# ---[ / C.gitignore ]---
+
+
+
+
+
+# ---[ C++.gitignore (https://raw.githubusercontent.com/github/gitignore/85bf08b/C%2B%2B.gitignore) ]---
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+# ---[ / C++.gitignore ]---
+
+
+
+
+
 # ---[ Java.gitignore (https://raw.githubusercontent.com/github/gitignore/85bf08b/Java.gitignore) ]---
 # Compiled class file
 *.class
@@ -327,11 +425,11 @@ local.properties
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
 
 # CMake
 cmake-build-*/
@@ -425,4 +523,7 @@ GitHub.sublime-settings
 .gradle/
 .project
 .vscode/
+cmake-build/
+jni-header-gradle-build/
+jni-headers/
 # ---[ / Custom ]---
