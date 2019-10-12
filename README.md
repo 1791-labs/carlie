@@ -1,6 +1,6 @@
 # Project: Carlie
 
-> A fast, asynchronous, and *easy-to-use* TCP server for the __JVM__ (built on [__libuv__](https://libuv.org)).
+> A fast, asynchronous, and *easy-to-use* TCP server library for the __JVM__ (built on [__libuv__](https://libuv.org)).
 
 ## Installation
 
@@ -16,7 +16,7 @@ __Gradle:__
 
 ```groovy
 dependencies {
-  implementation 'io.seventeenninetyone:carlie:0.0.0'
+  implementation 'io.seventeenninetyone:carlie:0.1.1'
 }
 ```
 
@@ -26,7 +26,7 @@ __Maven:__
 <dependency>
   <groupId>io.seventeenninetyone</groupId>
   <artifactId>carlie</artifactId>
-  <version>0.0.0</version>
+  <version>0.1.1</version>
   <type>pom</type>
 </dependency>
 ```
