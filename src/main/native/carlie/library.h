@@ -16,13 +16,21 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities.native_library_loader
 
-class LibraryLoadFailureException : RuntimeException {
-  companion object {
-    const val serialVersionUID = 1L
-  }
 
-  constructor(message: String):
-    super(message)
-}
+#ifndef IO_SEVENTEENNINETYONE_CARLIE_LIBRARY_H
+#define IO_SEVENTEENNINETYONE_CARLIE_LIBRARY_H 1
+
+
+
+#include <carlie/common.h>
+
+
+
+JNIEXPORT jni_int_t
+JNICALL JNI_OnLoad(jni_java_vm_t * vm,
+                   void * reserved);
+
+
+
+#endif

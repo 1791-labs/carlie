@@ -20,13 +20,12 @@ set -x
 
 ################################################################################
 # Example usage:                                                               #
-# ./generate-jni-header com.example.some.Class some/file/path.jni.h            #
+# ./gradle-compile-c-sources-script /home/project linux-x86_64                 #
 ################################################################################
 
-JNI_HEADERS_DIRECTORY=$CARLIE_PROJECT_DIRECTORY/jni-headers
+PROJECT_DIRECTORY=$1
+PLATFORM=$2
 
-JNI_HEADER_CLASS_NAME=$1
-JNI_HEADER_FILE_PATH=$2
-
-mkdir -p $JNI_HEADERS_DIRECTORY
-$JAVA_HOME/bin/javah -classpath "$($CARLIE_PROJECT_DIRECTORY/gradlew --quiet --system-prop org.gradle.project.buildDir=$CARLIE_PROJECT_DIRECTORY/jni-header-gradle-build printRuntimeClasspath)" -jni -o $JNI_HEADERS_DIRECTORY/$JNI_HEADER_FILE_PATH $JNI_HEADER_CLASS_NAME
+# https://stackoverflow.com/a/32981392
+# unbuffer -p $PROJECT_DIRECTORY/tools/cross-compile/run-$PLATFORM "/home/project/cmake-run-build"
+unbuffer $PROJECT_DIRECTORY/tools/cross-compile/run-$PLATFORM "/home/project/cmake-run-build"

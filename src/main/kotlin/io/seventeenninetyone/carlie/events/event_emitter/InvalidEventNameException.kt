@@ -18,10 +18,11 @@
 
 package io.seventeenninetyone.carlie.events.event_emitter
 
-class InvalidEventNameException : Exception {
+class InvalidEventNameException : IllegalArgumentException {
   companion object {
     const val serialVersionUID = 1L
   }
 
-  constructor() : super() {}
+  constructor():
+    super()
 }

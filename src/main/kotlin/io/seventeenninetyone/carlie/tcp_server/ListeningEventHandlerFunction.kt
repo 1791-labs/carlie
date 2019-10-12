@@ -16,13 +16,22 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities.native_library_loader
+package io.seventeenninetyone.carlie.tcp_server
 
-class LibraryLoadFailureException : RuntimeException {
-  companion object {
-    const val serialVersionUID = 1L
+/**
+ * The functional interface for a function used as an event handler for when a
+ * server has started to listen on a bound address.
+ *
+ * @author Jay B.
+ * @see [io.seventeenninetyone.carlie.TcpServer.onceListening]
+ */
+@FunctionalInterface
+interface ListeningEventHandlerFunction {
+  fun handle()
+
+  @JvmSynthetic
+  @JvmDefault
+  operator fun invoke() {
+    return this.handle()
   }
-
-  constructor(message: String):
-    super(message)
 }

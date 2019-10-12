@@ -21,31 +21,27 @@ package io.seventeenninetyone.carlie.utilities.native_library_loader
 class Platform {
   companion object {
     val ARCHITECTURE: String?
-    val OS: String?
-    val sluggifiedName: String by lazy {
-      com.sun.jna.Platform.RESOURCE_PREFIX
-    }
+    val OPERATING_SYSTEM: String?
 
     init {
       when {
         (com.sun.jna.Platform.isLinux() &&
          com.sun.jna.Platform.is64Bit()) -> {
-          this.OS = "linux"
           this.ARCHITECTURE = when {
             com.sun.jna.Platform.isARM() -> "aarch64"
             com.sun.jna.Platform.isIntel() -> "x86_64"
             else -> null
           }
+          this.OPERATING_SYSTEM = "linux"
         }
         (com.sun.jna.Platform.isMac() &&
          com.sun.jna.Platform.isIntel() &&
          com.sun.jna.Platform.is64Bit()) -> {
           this.ARCHITECTURE = "x86_64"
-          this.OS = "mac"
+          this.OPERATING_SYSTEM = "mac"
         }
         (com.sun.jna.Platform.isWindows() &&
          com.sun.jna.Platform.isIntel()) -> {
-          this.OS = "windows"
           this.ARCHITECTURE = (
             if (com.sun.jna.Platform.is64Bit()) {
               "x86_64"
@@ -53,17 +49,23 @@ class Platform {
               "x86"
             }
           )
+          this.OPERATING_SYSTEM = "windows"
         }
         else -> {
           this.ARCHITECTURE = null
-          this.OS = null
+          this.OPERATING_SYSTEM = null
         }
       }
     }
 
-    @JvmStatic fun isSupported(): Boolean {
+    val sluggifiedName by lazy {
+      com.sun.jna.Platform.RESOURCE_PREFIX!!
+    }
+
+    @JvmStatic
+    fun isSupported(): Boolean {
       return ((this.ARCHITECTURE != null) &&
-              (this.OS != null))
+              (this.OPERATING_SYSTEM != null))
     }
   }
 }

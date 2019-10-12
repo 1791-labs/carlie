@@ -16,20 +16,29 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie;
+package io.seventeenninetyone.carlie.utilities
 
-import io.seventeenninetyone.carlie.utilities.NativeLibraryLoader;
+import java.util.concurrent.atomic.AtomicBoolean
 
-public class Dummy
-{
-  static {
-    NativeLibraryLoader.extractAndLoad();
+class SimpleAtomicLock {
+  val isLocked by lazy {
+    this.value.get()
   }
 
-  public static void main(String[] arguments)
-  {
-    Dummy.printHelloWorld();
+  private val value by lazy {
+    AtomicBoolean(false)
   }
 
-  native private static void printHelloWorld();
+  fun tryLock(): Boolean {
+    return this.value.compareAndSet(false, true)
+  }
+
+  @Throws(IllegalStateException::class)
+  fun unlock() {
+    val valueUpdated = this.value.compareAndSet(true, false)
+    // If the lock was already acquired, then throw an exception.
+    if (! valueUpdated) {
+      throw IllegalStateException()
+    }
+  }
 }

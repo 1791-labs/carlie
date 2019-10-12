@@ -16,13 +16,24 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities.native_library_loader
+package io.seventeenninetyone.carlie.tcp_server
 
-class LibraryLoadFailureException : RuntimeException {
-  companion object {
-    const val serialVersionUID = 1L
+import io.seventeenninetyone.carlie.TcpServer
+
+/**
+ * The functional interface for a function used as an event handler for incoming
+ * connections on a server.
+ *
+ * @author Jay B.
+ * @see [io.seventeenninetyone.carlie.TcpServer.onClientConnected]
+ */
+@FunctionalInterface
+interface ClientConnectedEventHandlerFunction {
+  fun handle(connection: TcpServer.Connection)
+
+  @JvmSynthetic
+  @JvmDefault
+  operator fun invoke(connection: TcpServer.Connection) {
+    return this.handle(connection)
   }
-
-  constructor(message: String):
-    super(message)
 }

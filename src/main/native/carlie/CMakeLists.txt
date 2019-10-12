@@ -101,7 +101,9 @@ endif()
 ################################################################################
 set(CARLIE_PROJECT_SOURCE_FILES "")
 
-list(APPEND CARLIE_PROJECT_SOURCE_FILES "dummy-class.c")
+list(APPEND CARLIE_PROJECT_SOURCE_FILES "library.c"
+                                        "tcp-server-class.c"
+                                        "tcp-server/uv-exception-class.c")
 
 
 
@@ -327,6 +329,10 @@ if(CARLIE_BUILD_TARGET_OS MATCHES "linux|windows")
   endif()
 
   list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-static-libgcc")
+
+  # NOTE: Although this option is accepted by the Windows compilers/linkers,
+  # unfortunately, it doesn’t seem to work.
+  list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,--exclude-libs,ALL")
 
   list(APPEND CARLIE_PROJECT_LINKER_OPTIONS "-Wl,--whole-archive"
                                             ${CARLIE_PROJECT_NATIVE_LIBRARY_DEPENDENCIES}

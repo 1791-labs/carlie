@@ -32,43 +32,69 @@ import java.util.UUID
 
 class NativeLibraryLoader {
   companion object {
-    private val CLASS = NativeLibraryLoader::class.java
-    private var extractedLibraryFileLock: FileLock? = null
-    private val fullLibraryName: String by lazy {
-      System.mapLibraryName(this.LIBRARY_NAME)
-    }
-    private var isLoaded = false
+    private val CLASS: Class<NativeLibraryLoader>
+    private var extractedLibraryFileLock: FileLock?
+    @Volatile
+    private var isAborted: Boolean
+    @Volatile
+    private var isLoaded: Boolean
     private const val LIBRARY_NAME = "carlie_jni"
     private const val LIBRARY_VERSION = Project.CARLIE_VERSION
-    private val libraryFileExists: Boolean by lazy {
+
+    init {
+      if (! Platform.isSupported()) {
+        throw PlatformNotSupportedException("The native library \"${this.LIBRARY_NAME}\" doesn’t support this platform (${Platform.sluggifiedName}) and couldn’t be loaded.")
+      }
+      this.CLASS = NativeLibraryLoader::class.java
+      this.extractedLibraryFileLock = null
+      this.isAborted = false
+      this.isLoaded = false
+    }
+
+    private val fullLibraryName by lazy {
+      System.mapLibraryName(this.LIBRARY_NAME)
+    }
+
+    private val libraryFileExists by lazy {
       val resource = this.CLASS.getResource(this.libraryFilePath)
       (resource != null)
     }
-    private val libraryFilePath: String by lazy {
+
+    private val libraryFilePath by lazy {
       "${File.separator}${
-        Paths.get("native-libraries", this.platformOs, this.platformArchitecture, this.fullLibraryName)
+        Paths.get("native-libraries", this.platformOperatingSystem, this.platformArchitecture, this.fullLibraryName)
       }"
     }
-    private val platformArchitecture: String by lazy {
+
+    private val platformArchitecture by lazy {
       Platform.ARCHITECTURE!!
     }
-    private val platformOs: String by lazy {
-      Platform.OS!!
+
+    private val platformOperatingSystem by lazy {
+      Platform.OPERATING_SYSTEM!!
     }
-    private val temporaryDirectoryFile: File by lazy {
+
+    private val temporaryDirectoryFile by lazy {
       val rootDirectoryPath = System.getProperty("java.io.tmpdir")
       val temporaryDirectoryFile = File("${
         Paths.get(rootDirectoryPath, "java-io-seventeenninetyone-carlie")
       }")
       temporaryDirectoryFile.absoluteFile
     }
-    private val temporaryDirectoryPath: String by lazy {
+
+    private val temporaryDirectoryPath by lazy {
       this.temporaryDirectoryFile.absolutePath
     }
 
-    init {
-      if (! Platform.isSupported()) {
-        throw PlatformNotSupportedException("The native library \"${this.LIBRARY_NAME}\" doesn’t support this platform (${Platform.sluggifiedName}) and couldn’t be loaded.")
+    @JvmStatic
+    fun abort() {
+      if (this.isAborted) return
+      synchronized(this) {
+        if (this.extractedLibraryFileLock != null) {
+          val extractedLibraryChannel = this.extractedLibraryFileLock!!.acquiredBy()
+          extractedLibraryChannel.close()
+        }
+        this.isAborted = true
       }
     }
 
@@ -84,22 +110,20 @@ class NativeLibraryLoader {
       extractedLibraryFiles?.forEach {
         file ->
           val fileOutputStream = FileOutputStream(file)
-          val fileChannel = fileOutputStream!!.channel
+          val fileChannel = fileOutputStream.channel
           val fileLock = fileChannel.tryLock()
           // If an exclusive lock can be acquired, then the file isn’t locked.
           if (fileLock != null) {
             fileLock.release()
             try {
               file.delete()
-            } catch (exception: IOException) {
-              //
-            }
+            } catch (exception: IOException) {}
           }
       }
     }
 
-    @JvmStatic
     @Synchronized
+    @JvmStatic
     fun extractAndLoad() {
       if (this.isLoaded) return
       this.cleanLeftoverMess()
@@ -112,7 +136,7 @@ class NativeLibraryLoader {
       }-${this.fullLibraryName}")
       extractedLibraryFile.createNewFile()
       val extractedLibraryFileOutputStream = FileOutputStream(extractedLibraryFile)
-      val extractedLibraryFileChannel = extractedLibraryFileOutputStream!!.channel
+      val extractedLibraryFileChannel = extractedLibraryFileOutputStream.channel
       this.extractedLibraryFileLock = extractedLibraryFileChannel.lock()
       val libraryFileInputStream = this.CLASS.getResourceAsStream(this.libraryFilePath)
       val libraryFileInputStreamBytesLength = OperatingSystem.getPageSizeOrDefault(4096u)
@@ -142,10 +166,7 @@ class NativeLibraryLoader {
     }
 
     protected fun finalize() {
-      if (this.extractedLibraryFileLock != null) {
-        val extractedLibraryChannel = this.extractedLibraryFileLock!!.acquiredBy()
-        extractedLibraryChannel.close()
-      }
+      this.abort()
     }
   }
 }

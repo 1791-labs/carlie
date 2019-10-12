@@ -18,6 +18,8 @@
 
 package io.seventeenninetyone.carlie.events;
 
+import io.seventeenninetyone.carlie.events.event_emitter.EventHandlerFunction;
+import io.seventeenninetyone.carlie.events.event_emitter.InvalidEventNameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,32 +51,26 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#getEventNames()")
   void testGetEventNames()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     String[] eventNames;
     eventNames = events.getEventNames();
     assertEquals(0, eventNames.length);
     final String eventName1 = "bar";
-    events.onEvent(eventName1, (data) -> {
-      return null;
-    });
+    events.onEvent(eventName1, (data) -> {});
     eventNames = events.getEventNames();
     assertEquals(1, eventNames.length);
     assertEquals(eventName1, eventNames[0]);
     final String eventName2 = "baz";
-    events.onEvent(eventName2, (data) -> {
-      return null;
-    });
+    events.onEvent(eventName2, (data) -> {});
     eventNames = events.getEventNames();
     Arrays.sort(eventNames, EventEmitterTests.enUsCollator);
     assertEquals(2, eventNames.length);
     assertEquals(eventName1, eventNames[0]);
     assertEquals(eventName2, eventNames[1]);
     final String eventName3 = "foo";
-    events.onEvent(eventName3, (data) -> {
-      return null;
-    });
+    events.onEvent(eventName3, (data) -> {});
     eventNames = events.getEventNames();
     Arrays.sort(eventNames, EventEmitterTests.enUsCollator);
     assertEquals(3, eventNames.length);
@@ -86,23 +82,19 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#getEventHandlersFor(…)")
   void testGetEventHandlersFor()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     final String eventName = "bar";
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler1 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler1 = (data) -> {};
     events.onEvent(eventName, eventHandler1);
     eventHandlers = events.getEventHandlersFor(eventName);
     assertEquals(1, eventHandlers.length);
     assertEquals(eventHandler1, eventHandlers[0]);
-    final EventHandlerFunction<Object, Void> eventHandler2 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler2 = (data) -> {};
     events.onEvent(eventName, eventHandler2);
     eventHandlers = events.getEventHandlersFor(eventName);
     assertEquals(2, eventHandlers.length);
@@ -116,36 +108,30 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#onEvent(…)")
   void testOnEvent()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     String[] eventNames;
     eventNames = events.getEventNames();
     assertEquals(0, eventNames.length);
     final String eventName1 = "bar";
-    final EventHandlerFunction<Object, Void> eventHandler1 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler1 = (data) -> {};
     events.onEvent(eventName1, eventHandler1);
     eventNames = events.getEventNames();
     assertEquals(1, eventNames.length);
     assertEquals(eventName1, eventNames[0]);
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(1, eventHandlers.length);
     assertEquals(eventHandler1, eventHandlers[0]);
-    final EventHandlerFunction<Object, Void> eventHandler2 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler2 = (data) -> {};
     events.onEvent(eventName1, eventHandler2);
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(2, eventHandlers.length);
     assertEquals(eventHandler1, eventHandlers[0]);
     assertEquals(eventHandler2, eventHandlers[1]);
     final String eventName2 = "baz";
-    final EventHandlerFunction<Object, Void> eventHandler3 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler3 = (data) -> {};
     events.onEvent(eventName2, eventHandler3);
     eventNames = events.getEventNames();
     Arrays.sort(eventNames, EventEmitterTests.enUsCollator);
@@ -155,19 +141,17 @@ class EventEmitterTests
     eventHandlers = events.getEventHandlersFor(eventName2);
     assertEquals(1, eventHandlers.length);
     assertEquals(eventHandler3, eventHandlers[0]);
-    final EventHandlerFunction<Object, Void> eventHandler4 = (data) -> {
-      return null;
-    };
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    final EventHandlerFunction eventHandler4 = (data) -> {};
+    assertThrows(InvalidEventNameException.class, () -> {
       events.onEvent("   ", eventHandler4);
     });
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.onEvent("", eventHandler4);
     });
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.onEvent(" \t ", eventHandler4);
     });
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.onEvent(" \n ", eventHandler4);
     });
   }
@@ -175,16 +159,14 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#onceEvent(…)")
   void testOnceEvent()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     final String eventName = "bar";
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler = (data) -> {};
     events.onceEvent(eventName, eventHandler);
     eventHandlers = events.getEventHandlersFor(eventName);
     assertEquals(1, eventHandlers.length);
@@ -197,30 +179,28 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#emitEvent(…)")
   void testEmitEvent()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     final String eventName = "bar";
     final Boolean[] dataProxy = { false };
-    final EventHandlerFunction<Object, Void> eventHandler1 = (data) -> {
+    final EventHandlerFunction eventHandler1 = (data) -> {
       dataProxy[0] = true;
-      return null;
     };
     assertEquals(false, dataProxy[0]);
     events.onEvent(eventName, eventHandler1);
     final String[] eventNames = events.getEventNames();
     assertEquals(1, eventNames.length);
     assertEquals(eventName, eventNames[0]);
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName);
     assertEquals(1, eventHandlers.length);
     assertEquals(eventHandler1, eventHandlers[0]);
     events.emitEvent(eventName);
     assertEquals(true, dataProxy[0]);
     events.removeEventHandlersFor(eventName);
-    final EventHandlerFunction<Object, Void> eventHandler2 = (data) -> {
+    final EventHandlerFunction eventHandler2 = (data) -> {
       dataProxy[0] = (Boolean) data;
-      return null;
     };
     assertEquals(true, dataProxy[0]);
     events.onEvent(eventName, eventHandler2);
@@ -229,16 +209,16 @@ class EventEmitterTests
     assertEquals(eventHandler2, eventHandlers[0]);
     events.emitEvent(eventName, false);
     assertEquals(false, dataProxy[0]);
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.emitEvent("   ");
     });
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.emitEvent("");
     });
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.emitEvent(" \t ");
     });
-    assertThrows(EventEmitterInvalidEventNameException.class, () -> {
+    assertThrows(InvalidEventNameException.class, () -> {
       events.emitEvent(" \n ");
     });
   }
@@ -246,46 +226,34 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#removeAllEventHandlers()")
   void testRemoveAllEventHandlers()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     final String eventName1 = "bar";
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler1 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler1 = (data) -> {};
     events.onEvent(eventName1, eventHandler1);
-    final EventHandlerFunction<Object, Void> eventHandler2 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler2 = (data) -> {};
     events.onEvent(eventName1, eventHandler2);
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(2, eventHandlers.length);
     final String eventName2 = "baz";
     eventHandlers = events.getEventHandlersFor(eventName2);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler3 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler3 = (data) -> {};
     events.onEvent(eventName2, eventHandler3);
     eventHandlers = events.getEventHandlersFor(eventName2);
     assertEquals(1, eventHandlers.length);
     final String eventName3 = "foo";
     eventHandlers = events.getEventHandlersFor(eventName3);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler4 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler4 = (data) -> {};
     events.onEvent(eventName3, eventHandler4);
-    final EventHandlerFunction<Object, Void> eventHandler5 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler5 = (data) -> {};
     events.onEvent(eventName3, eventHandler5);
-    final EventHandlerFunction<Object, Void> eventHandler6 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler6 = (data) -> {};
     events.onEvent(eventName3, eventHandler6);
     eventHandlers = events.getEventHandlersFor(eventName3);
     assertEquals(3, eventHandlers.length);
@@ -307,16 +275,14 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#removeEventHandlerFor(…)")
   void testRemoveEventHandlerFor()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     final String eventName1 = "bar";
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler1 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler1 = (data) -> {};
     events.onEvent(eventName1, eventHandler1);
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(1, eventHandlers.length);
@@ -327,13 +293,9 @@ class EventEmitterTests
     final String eventName2 = "baz";
     eventHandlers = events.getEventHandlersFor(eventName2);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler2 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler2 = (data) -> {};
     events.onEvent(eventName2, eventHandler2);
-    final EventHandlerFunction<Object, Void> eventHandler3 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler3 = (data) -> {};
     events.onEvent(eventName2, eventHandler3);
     events.onEvent(eventName2, eventHandler2);
     eventHandlers = events.getEventHandlersFor(eventName2);
@@ -358,20 +320,16 @@ class EventEmitterTests
   @Test
   @DisplayName("EventEmitter#removeEventHandlersFor(…)")
   void testRemoveEventHandlersFor()
-    throws EventEmitterInvalidEventNameException
+    throws InvalidEventNameException
   {
     final EventEmitter events = new EventEmitter();
     final String eventName1 = "bar";
-    EventHandlerFunction<Object, Void>[] eventHandlers;
+    EventHandlerFunction[] eventHandlers;
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler1 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler1 = (data) -> {};
     events.onEvent(eventName1, eventHandler1);
-    final EventHandlerFunction<Object, Void> eventHandler2 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler2 = (data) -> {};
     events.onEvent(eventName1, eventHandler2);
     eventHandlers = events.getEventHandlersFor(eventName1);
     assertEquals(2, eventHandlers.length);
@@ -381,9 +339,7 @@ class EventEmitterTests
     final String eventName2 = "baz";
     eventHandlers = events.getEventHandlersFor(eventName2);
     assertEquals(0, eventHandlers.length);
-    final EventHandlerFunction<Object, Void> eventHandler3 = (data) -> {
-      return null;
-    };
+    final EventHandlerFunction eventHandler3 = (data) -> {};
     events.onEvent(eventName2, eventHandler3);
     eventHandlers = events.getEventHandlersFor(eventName2);
     assertEquals(1, eventHandlers.length);

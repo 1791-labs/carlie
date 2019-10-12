@@ -20,15 +20,13 @@ package io.seventeenninetyone.carlie.events
 
 import com.google.common.collect.Lists
 import com.google.common.collect.Maps
+import io.seventeenninetyone.carlie.events.event_emitter.EventHandlerFunction
 import io.seventeenninetyone.carlie.events.event_emitter.InvalidEventNameException
-
-typealias EventHandler = EventHandlerFunction<@ParameterName(name = "data") Any?, Void?>
-typealias EventHandlerBase = Function1<@ParameterName(name = "data") Any?, Void?>
 
 class EventEmitter {
   private var eventCount: ULong
-  private var handlers: MutableMap<String, MutableList<EventHandlerBase>>
-  private var onceHandlers: MutableMap<EventHandlerBase, EventHandlerBase>
+  private var handlers: MutableMap<String, MutableList<EventHandlerFunction>>
+  private var onceHandlers: MutableMap<EventHandlerFunction, EventHandlerFunction>
 
   constructor() {
     this.eventCount = 0uL
@@ -37,7 +35,9 @@ class EventEmitter {
   }
 
   @Throws(InvalidEventNameException::class)
-  fun emitEvent(name: String) = this.emitEvent(name, null)
+  fun emitEvent(name: String) {
+    this.emitEvent(name, null)
+  }
 
   @Throws(InvalidEventNameException::class)
   fun emitEvent(name: String,
@@ -55,7 +55,7 @@ class EventEmitter {
     }
   }
 
-  fun getEventHandlersFor(name: String): Array<EventHandler> {
+  fun getEventHandlersFor(name: String): Array<EventHandlerFunction> {
     val handlers = this.handlers[name]
     if (handlers == null) {
       return emptyArray()
@@ -68,9 +68,9 @@ class EventEmitter {
         handler ->
           val onceHandler = this.onceHandlers[handler]
           if (onceHandler != null) {
-            onceHandler as EventHandler
+            onceHandler
           } else {
-            handler as EventHandler
+            handler
           }
       }
       .toTypedArray()
@@ -86,32 +86,34 @@ class EventEmitter {
 
   @Throws(InvalidEventNameException::class)
   fun onceEvent(name: String,
-                handler: EventHandler) {
-    return this.onceEvent(name, handler as EventHandlerBase)
-  }
-
-  @Throws(InvalidEventNameException::class)
-  fun onceEvent(name: String,
-                handler: EventHandlerBase) {
-    fun wrappedHandler(data: Any?): Void? {
-      this.removeEventHandlerFor(name, ::wrappedHandler)
-      this.onceHandlers.remove(::wrappedHandler)
-      handler(data)
-      return null
-    }
-    this.onceHandlers[::wrappedHandler] = handler
-    this.onEvent(name, ::wrappedHandler)
+                handler: EventHandlerFunction) {
+    // fun wrappedHandler(data: Any?) {
+    //   val wrappedHandler = ::wrappedHandler as EventHandlerFunction
+    //   this.removeEventHandlerFor(name, wrappedHandler)
+    //   this.onceHandlers.remove(wrappedHandler)
+    //   handler(data)
+    // }
+    // val wrappedHandler = ::wrappedHandler as EventHandlerFunction
+    // this.onceHandlers[wrappedHandler] = handler
+    // this.onEvent(name, wrappedHandler)
+    val wrappedHandlerBox: Array<EventHandlerFunction?> = arrayOf(null)
+    val wrappedHandler = (object : EventHandlerFunction {
+      override fun handle(data: Any?) {
+        val wrappedHandler = wrappedHandlerBox[0]!!
+        wrappedHandlerBox[0] = null
+        this@EventEmitter.removeEventHandlerFor(name, wrappedHandler)
+        this@EventEmitter.onceHandlers.remove(wrappedHandler)
+        handler(data)
+      }
+    }) as EventHandlerFunction
+    wrappedHandlerBox[0] = wrappedHandler
+    this.onceHandlers[wrappedHandler] = handler
+    this.onEvent(name, wrappedHandler)
   }
 
   @Throws(InvalidEventNameException::class)
   fun onEvent(name: String,
-              handler: EventHandler) {
-    return this.onEvent(name, handler as EventHandlerBase)
-  }
-
-  @Throws(InvalidEventNameException::class)
-  fun onEvent(name: String,
-              handler: EventHandlerBase) {
+              handler: EventHandlerFunction) {
     val name1 = name.trim()
     if (name1 == "") {
       throw InvalidEventNameException()
@@ -132,12 +134,7 @@ class EventEmitter {
   }
 
   fun removeEventHandlerFor(name: String,
-                            handler: EventHandler) {
-    return this.removeEventHandlerFor(name, handler as EventHandlerBase)
-  }
-
-  fun removeEventHandlerFor(name: String,
-                            handler: EventHandlerBase) {
+                            handler: EventHandlerFunction) {
     val handlers = this.handlers[name]
     if (handlers == null) return
     if (handlers.isEmpty()) return

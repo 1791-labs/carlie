@@ -18,6 +18,9 @@
 
 package io.seventeenninetyone
 
+/**
+ * @suppress
+ */
 class Project {
   companion object {
     const val CARLIE_VERSION = "${carlieVersion}"

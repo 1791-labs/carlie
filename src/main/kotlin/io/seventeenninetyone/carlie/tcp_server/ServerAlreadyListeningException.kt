@@ -16,13 +16,20 @@
  *******************************************************************************
  */
 
-package io.seventeenninetyone.carlie.utilities.native_library_loader
+package io.seventeenninetyone.carlie.tcp_server
 
-class LibraryLoadFailureException : RuntimeException {
+/**
+ * An exception thrown when [io.seventeenninetyone.carlie.TcpServer.listen] is
+ * called on a server that’s already listening for connections.
+ *
+ * @author Jay B.
+ * @see [io.seventeenninetyone.carlie.TcpServer.listen]
+ */
+class ServerAlreadyListeningException : Exception {
   companion object {
     const val serialVersionUID = 1L
   }
 
-  constructor(message: String):
-    super(message)
+  constructor():
+    super()
 }
